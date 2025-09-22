@@ -10,6 +10,7 @@
     "test": "echo \"No tests yet\" && exit 0"
   },
   "dependencies": {
+    "dotenv": "^16.4.5",
     "pg": "^8.16.3"
   },
   "repository": {
