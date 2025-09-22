@@ -69,17 +69,39 @@ npm install
 ```
 
 3. **Configure as variáveis de ambiente (opcional):**
+
+Para usar configurações personalizadas do banco:
 ```bash
 cp .env.example .env
-# Edite o arquivo .env com suas configurações se necessário
+# Edite o arquivo .env com suas configurações personalizadas
 ```
+
+**Exemplo de personalização (.env):**
+```env
+DB_HOST=localhost
+DB_PORT=5433
+DB_USER=seu_usuario
+DB_PASSWORD=sua_senha_segura
+DB_NAME=minha_escola
+```
+
+> 💡 **Flexibilidade total**: Você pode personalizar host, porta, usuário, senha e nome do banco. O Docker criará automaticamente o banco com suas configurações!
 
 4. **Inicie o banco de dados:**
 ```bash
 docker-compose up -d
 ```
 
-O banco será criado automaticamente com as tabelas e dados de exemplo.
+O Docker criará automaticamente:
+- ✅ Container PostgreSQL com suas configurações personalizadas (se definidas no `.env`)
+- ✅ Banco de dados com o nome especificado
+- ✅ Tabelas e dados de exemplo via scripts SQL
+
+**Verificar se o banco está rodando:**
+```bash
+docker ps
+# Deve mostrar o container horarios_aula_db em execução
+```
 
 5. **Execute os relatórios:**
 
@@ -162,27 +184,83 @@ O sistema vem com dados pré-configurados:
 - **PostgreSQL**: Banco de dados relacional
 - **Docker**: Containerização do banco de dados
 - **pg**: Driver PostgreSQL para Node.js
+- **dotenv**: Gerenciamento de variáveis de ambiente
+
+## 🏗️ Arquitetura
+
+```
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Aplicação     │    │     Docker       │    │   PostgreSQL    │
+│   Node.js       │───▶│   Compose        │───▶│    Database     │
+│                 │    │                  │    │                 │
+│ • index.js      │    │ • Container      │    │ • Tabelas       │
+│ • horariosLivres│    │ • Volumes        │    │ • Scripts SQL   │
+│ • db.js         │    │ • Networks       │    │ • Dados         │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+         ▲
+         │
+┌─────────────────┐
+│ Configuração    │
+│                 │
+│ • .env          │
+│ • package.json  │
+│ • docker-compose│
+└─────────────────┘
+```
 
 ## 📝 Configuração do Banco
 
-**Configuração padrão (desenvolvimento local):**
-- Host: localhost
-- Porta: 5432
-- Database: horarios_aula
+**Configuração flexível via variáveis de ambiente:**
 
-> ⚠️ **Importante**: As credenciais estão configuradas no `docker-compose.yaml` e `src/db.js` apenas para desenvolvimento local. Em produção, use variáveis de ambiente para maior segurança.
+O sistema suporta configuração personalizada através do arquivo `.env`. Todas as configurações têm valores padrão para desenvolvimento local.
 
-**Para produção, configure as variáveis de ambiente:**
-```bash
-DB_HOST=seu_host
-DB_PORT=5432
-DB_USER=seu_usuario
-DB_PASSWORD=sua_senha_segura
-DB_NAME=horarios_aula
+### 🔧 Variáveis Disponíveis:
+
+| Variável | Padrão | Descrição |
+|----------|--------|-----------|
+| `DB_HOST` | `localhost` | Endereço do servidor do banco |
+| `DB_PORT` | `5432` | Porta do PostgreSQL |
+| `DB_USER` | `user` | Usuário do banco |
+| `DB_PASSWORD` | `password` | Senha do banco |
+| `DB_NAME` | `horarios_aula` | Nome do banco de dados |
+
+### 🌍 Exemplos de Configuração:
+
+**Desenvolvimento local (padrão):**
+```env
+# Sem .env necessário - usa valores padrão
 ```
+
+**Desenvolvimento em equipe:**
+```env
+DB_NAME=horarios_dev
+DB_USER=equipe_dev
+DB_PASSWORD=dev123
+DB_PORT=5433
+```
+
+**Ambiente de testes:**
+```env
+DB_NAME=horarios_test
+DB_PORT=5434
+DB_USER=tester
+DB_PASSWORD=test456
+```
+
+**Produção:**
+```env
+DB_HOST=servidor-producao.com
+DB_USER=admin_escola
+DB_PASSWORD=senha_super_segura_2024
+DB_NAME=sistema_escola_producao
+DB_PORT=5432
+```
+
+> ⚠️ **Importante**: Em produção, sempre use senhas fortes e configure adequadamente as variáveis de ambiente por segurança.
 
 ## 🔄 Comandos Úteis
 
+### Docker:
 ```bash
 # Parar o banco de dados
 docker-compose down
@@ -190,11 +268,35 @@ docker-compose down
 # Ver logs do banco
 docker-compose logs db
 
-# Conectar ao banco via psql
-docker exec -it horarios_aula_db psql -U user -d horarios_aula
+# Reiniciar com configurações atualizadas
+docker-compose down && docker-compose up -d
 
-# Reinstalar dependências
+# Conectar ao banco via psql (substitua as credenciais se personalizadas)
+docker exec -it horarios_aula_db psql -U user -d horarios_aula
+```
+
+### Aplicação:
+```bash
+# Instalar dependências
 npm install
+
+# Executar relatório principal
+npm start
+
+# Executar análise de horários livres
+npm run livres
+
+# Ver variáveis de ambiente carregadas
+node -e "require('dotenv').config(); console.log(process.env)"
+```
+
+### Desenvolvimento:
+```bash
+# Limpar e recriar banco com dados limpos
+docker-compose down -v && docker-compose up -d
+
+# Verificar conectividade
+npm start
 ```
 
 ## 🤝 Contribuindo
