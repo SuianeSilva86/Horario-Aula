@@ -1,0 +1,14 @@
+version: "3.8"
+services:
+  db:
+    image: postgres:15
+    container_name: horarios_aula_db
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: horarios_aula
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./sql:/docker-entrypoint-initdb.d

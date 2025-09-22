@@ -1,0 +1,32 @@
+{
+  "name": "horarios-aula",
+  "version": "1.0.0",
+  "description": "Exercício 2 - Horários de Aula",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "livres": "node src/horariosLivres.js",
+    "test": "echo \"No tests yet\" && exit 0"
+  },
+  "dependencies": {
+    "pg": "^8.16.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SuianeSilva86/Horario-Aula.git"
+  },
+  "keywords": [
+    "node",
+    "postgresql",
+    "sql",
+    "horarios",
+    "aula"
+  ],
+  "author": "Maria Suiane",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SuianeSilva86/Horario-Aula/issues"
+  },
+  "homepage": "https://github.com/SuianeSilva86/Horario-Aula#readme"
+}
