@@ -68,22 +68,32 @@ cd Horario-Aula
 npm install
 ```
 
-3. **Inicie o banco de dados:**
+3. **Configure as variáveis de ambiente (opcional):**
+```bash
+cp .env.example .env
+# Edite o arquivo .env com suas configurações se necessário
+```
+
+4. **Inicie o banco de dados:**
 ```bash
 docker-compose up -d
 ```
 
 O banco será criado automaticamente com as tabelas e dados de exemplo.
 
-4. **Execute os relatórios:**
+5. **Execute os relatórios:**
 
 **Relatório principal (horas por professor + ocupação de salas):**
 ```bash
+npm start
+# ou
 node src/index.js
 ```
 
 **Análise de horários livres:**
 ```bash
+npm run livres
+# ou
 node src/horariosLivres.js
 ```
 
@@ -155,12 +165,21 @@ O sistema vem com dados pré-configurados:
 
 ## 📝 Configuração do Banco
 
-**Conexão (src/db.js):**
+**Configuração padrão (desenvolvimento local):**
 - Host: localhost
 - Porta: 5432
-- Usuário: user
-- Senha: password
 - Database: horarios_aula
+
+> ⚠️ **Importante**: As credenciais estão configuradas no `docker-compose.yaml` e `src/db.js` apenas para desenvolvimento local. Em produção, use variáveis de ambiente para maior segurança.
+
+**Para produção, configure as variáveis de ambiente:**
+```bash
+DB_HOST=seu_host
+DB_PORT=5432
+DB_USER=seu_usuario
+DB_PASSWORD=sua_senha_segura
+DB_NAME=horarios_aula
+```
 
 ## 🔄 Comandos Úteis
 
